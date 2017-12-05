@@ -54,7 +54,8 @@
     <platform name="blackberry10">
         <rim:splash src="res/screen/blackberry/splashscreen.png" />
     </platform>
-    <preference name="SplashScreenDelay" value="1000" />
+    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+	<preference name="SplashScreenDelay" value="1000" />
     <preference name="AutoHideSplashScreen" value="true" />
     <engine name="android" spec="^6.2.3" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.1.0" />
