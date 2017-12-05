@@ -51,9 +51,6 @@
         <splash src="res/screen/windows/splashscreen.png" target="SplashScreen" />
         <splash src="res/screen/windows/splashscreenphone.png" target="SplashScreenPhone" />
     </platform>
-    <platform name="blackberry10">
-        <rim:splash src="res/screen/blackberry/splashscreen.png" />
-    </platform>
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
 	<preference name="SplashScreenDelay" value="1000" />
     <preference name="AutoHideSplashScreen" value="true" />
