@@ -1,7 +1,8 @@
-﻿<html>
+<html>
 <head>
 <title>PAU Mobile Attendance APP</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' http:"> -->
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <link rel="stylesheet" href="css/mAgIDS.min.css" />
 <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.min.css" />
@@ -21,29 +22,27 @@
 </style>
 <script type="text/javascript" src="js/jquery-1.9.1.min.js" data-prefetch></script>
 <script type="text/javascript" src="js/jquery.mobile-1.4.0.min.js" data-prefetch></script>
+<script type="text/javascript" src="js/index.js" data-prefetch></script>
 <script type="text/javascript" src="js/jquery-ui.js" data-prefetch></script>
+<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 <script type="text/javascript">
-	$( document ).bind( "mobileinit", function() {
-		$.support.cors = true;
-		$.mobile.allowCrossDomainPages = true;
-		$.mobile.phonegapNavigationEnabled = true
-		$.mobile.loader.prototype.options.text = "Loading Page....";
-		$.mobile.loader.prototype.options.textVisible = false;
-		$.mobile.loader.prototype.options.theme = "f";
-		$.mobile.loader.prototype.options.html = "";
-	});
-	
-		function onDeviceReady() {
-		document.getElementById("networkInfo").addEventListener("click", networkInfo);
+function onLoad(){
+	document.addEventListener('deviceready', onDeviceReady, false);
+}
+	function onDeviceReady() {
+//		document.getElementById("networkInfo").addEventListener("click", networkInfo);
+//		document.getElementById("networkInfo").addEventListener("click", networkInfo);
 		document.addEventListener("offline", onOffline, false);
 		document.addEventListener("online", onOnline, false);
 		var devversion=device.version;
 		var osversion=device.platform;
+		alert('Device Ready');
 		checkConnection();
-		 navigator.splashscreen.hide(); 
+		navigator.splashscreen.hide(); 
 	}
 	function checkConnection() {
 	    var networkState = navigator.network.connection.type;
+		alert(networkState);
 	    var states = {};
 	    states[Connection.UNKNOWN]  = 'Unknown connection';
 	    states[Connection.ETHERNET] = 'Ethernet connection';
@@ -64,18 +63,27 @@
 		        }
 		    }
 		}
-		function onOffline() {
+	function onOffline() {
    			alert('You are now offline!');
 		}
 
-function onOnline() {
+	function onOnline() {
 //   alert('You are now online!');
-}
-function exitFromApp()
-             {
+	}
+	function exitFromApp(){
                 navigator.app.exitApp();
              }
 
+	$( document ).bind( "mobileinit", function() {
+	 	$.support.cors = true;
+		$.mobile.ajaxEnabled= true;
+	 	$.mobile.allowCrossDomainPages = true;
+		$.mobile.phonegapNavigationEnabled = true
+		$.mobile.loader.prototype.options.text = "Loading Page....";
+		$.mobile.loader.prototype.options.textVisible = false;
+		$.mobile.loader.prototype.options.theme = "f";
+		$.mobile.loader.prototype.options.html = "";
+	});
 $(document).ready(function(){
 		var myLocalLang,myStateID,myDistrictID,myBlockID,myUID,mypwd,mSID,u,p,ses,lng,lat;
 		var resourceID,ag_pr_name,ag_process_name,componentID;
@@ -114,7 +122,7 @@ $(document).ready(function(){
 		myInit();
 		function loadMyPage(lclstrid,url,elementid,lclstrname){
 			var d=new Date().getFullYear();
-			var myfooter='© www.pau.edu </div><br> '+d+'. All rights reserved.';
+			var myfooter='© www.pau.edu </div><br> '+d+'. All rights reserved.			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">      			<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>    		</div>			';
 			$('div[data-role="footer"]').html(myfooter);
 			$('div[data-role="footer"]').trigger('create');
 			$(elementid).html("");
@@ -201,8 +209,12 @@ $(document).ready(function(){
 						$.mobile.changePage("#loginform", {reverse: false, changeHash: false, transition: "pop"});
 						myInit();
 						mPageLogout('#loginpage');		
-								
+						exitFromApp();
 					});	
+					break;
+
+				case (myID==="mCan"):
+					exitFromApp();
 					break;
 
 				case (myID==="mlogin"):
@@ -284,6 +296,15 @@ $(document).ready(function(){
 				case (myID==="AR"):
 //					alert($('#cal').text("course"));
 				 	$.post(myWebHost+'myattreg.php',$('#cous').serialize(),function(data){
+						$("#Attsl").html(data);
+						$("#Attsl").trigger('create');
+						myInit();
+						mPage('#AttSL');				
+					});	
+					break;
+
+				case (myID==="SL"):
+				 	$.post(myWebHost+'myslist.php',$('#cous').serialize(),function(data){
 						$("#Attreg").html(data);
 						$("#Attreg").trigger('create');
 						myInit();
@@ -321,7 +342,7 @@ $(document).ready(function(){
 
 </script>
 </head>
-<body>
+<body onLoad="onLoad()">
 	<div data-role="page" id="startpage" data-theme="f">
 	  <div data-role="header" data-theme="f" data-icon="gear">
 			<h1>PAU Attendance System</h1>
@@ -379,7 +400,7 @@ $(document).ready(function(){
 			<h1>PAU Attendance System</h1>
 			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">
      			<a href="#pagelang" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
-      			<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>
+      			<a id="mCan" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="delete">Close</a>
     		</div>
 		</div>
 		<div id="page1content" data-role="content" data-theme="f">
@@ -399,7 +420,7 @@ $(document).ready(function(){
 			<h1>PAU Attendance System</h1>
 			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">
      			<a href="#pagelang" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
-      			<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>
+      			<a id="mCan" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="delete">Close</a>
     		</div>
 	  </div>
 		<div id="sgeocontent" data-role="content" data-theme="f">
@@ -409,6 +430,9 @@ $(document).ready(function(){
 		<div data-role="footer" data-position="fixed" align="center"
 			data-theme="f">
 					© www.pau.edu <br> 2018. All rights reserved.
+			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">
+      			<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>
+    		</div>
 		</div>
 	</div>
 
@@ -419,7 +443,7 @@ $(document).ready(function(){
 			<h1>PAU Attendance System</h1>
 			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">
      			<a href="#pagelang" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
-      			<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>
+      			<a id="mCan" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="delete">Close</a>
     		</div>
 	  </div>
 		<div id="sgeocontent" data-role="content" data-theme="f">
@@ -439,7 +463,7 @@ $(document).ready(function(){
 			<h1>PAU Attendance System</h1>
 			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">
      			<a href="#pagelang" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
-      			<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>
+      			<a id="mCan" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="delete">Close</a>
     		</div>
 		</div>
 		<div id="dgeocontent" data-role="content" data-theme="f">
@@ -458,7 +482,7 @@ $(document).ready(function(){
 			<h1>PAU Attendance System</h1>
 			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">
      			<a href="#pagelang" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
-      			<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>
+      			<a id="mCan" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="delete">Close</a>
     		</div>
 		</div>
 		<div id="bgeocontent" data-role="content" data-theme="f">
@@ -555,7 +579,7 @@ $(document).ready(function(){
 			<h1>PAU Attendance System</h1>
 			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">
      			<a href="#pagelang" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
-      			<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>
+      			<a id="mCan" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="delete">Close</a>
     		</div>
 		</div>
 		<div id="blockattnext" data-role="content" data-theme="f">
@@ -580,6 +604,24 @@ $(document).ready(function(){
 		</div>
 		<div id="blocknext" data-role="content" data-theme="f">
 			<div id="Attreg"></div>
+		</div>
+		<div data-role="footer" data-position="fixed" align="center"
+			data-theme="f">
+			© www.pau.edu <br> 2018. All rights reserved.
+		</div>
+	</div>
+	<div data-role="page" id="AttSL" data-theme="f"
+		data-add-back-btn="true">
+		<div data-role="header" data-theme="f" data-icon="gear" data-position="fixed">
+			<a href="#" data-rel="back" data-icon="arrow-l">Back</a>
+			<h1>PAU Attendance System</h1>
+			<div class="ui-btn-right" data-role="controlgroup" data-mini="true" data-type="horizontal">
+     			<a href="#pagelang" data-role="button" data-icon="home" data-iconpos="notext">Home</a>
+				<a id="mlout" href="#" data-role="button" data-help="pagelang" data-iconpos="notext" data-icon="power">Logout</a>
+			</div>
+		</div>
+		<div id="blocknext" data-role="content" data-theme="f">
+			<div id="Attsl"></div>
 		</div>
 		<div data-role="footer" data-position="fixed" align="center"
 			data-theme="f">
